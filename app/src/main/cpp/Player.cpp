@@ -8,6 +8,7 @@ Player::Player(AAssetManager *assetManager) : assetManager(assetManager) {
 
 void Player::initPlayer() {
     marioTheme = SoundRecording::loadFromAssets(assetManager, "mario_theme.raw");
+    marioTheme->setLooping(true);
 
     AudioStreamBuilder builder;
     builder.setFormat(AudioFormat::I16);
@@ -19,13 +20,15 @@ void Player::initPlayer() {
 
     Result result = builder.openStream(&audioStream);
     if (result != Result::OK) {
-//        LOGE("Failed to open stream. Error $s", convertToText(result));
+        LOGE("Failed to open stream. Error $s", convertToText(result));
     }
 
     result = audioStream->requestStart();
     if (result != Result::OK) {
-//        LOGE("Failed to open stream. Error $s", convertToText(result));
+        LOGE("Failed to open stream. Error $s", convertToText(result));
     }
+
+    audioStream->setBufferSizeInFrames(audioStream->getFramesPerBurst() * 2);
 }
 
 void Player::play() {
